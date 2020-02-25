@@ -5,7 +5,19 @@
          flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+   <uses-permission android:name="android.permission.INTERNET"/>
+
+ 
+    <!-- Permissions options for the `storage` group -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!-- Permissions options for the `camera` group -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Permissions options for the `access_media_location` group -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
