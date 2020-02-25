@@ -37,33 +37,29 @@ class _AddEditScreenState extends State<AddEditScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            InkWell(
-              onTap: () async {
-                await PermissionsService().requestPhotosPermission();
-                _getCameraImage(context);
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.height / 1.5,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    image: widget.picture != null
-                        ? DecorationImage(
-                            image: _image == null
-                                ? NetworkImage(widget.picture.imageUrl ?? "")
-                                : FileImage(this._image),
-                            fit: BoxFit.cover)
-                        : DecorationImage(
-                            image: image != null || _image == null
-                                ? NetworkImage(image ?? "")
-                                : FileImage(this._image),
-                            fit: BoxFit.cover),
-                    color: Colors.grey.withOpacity(0.5),
-                    shape: BoxShape.rectangle),
-              ),
-            ),
-          ],
+        child: InkWell(
+          onTap: () async {
+            await PermissionsService().requestPhotosPermission();
+            _getCameraImage(context);
+          },
+          child: Container(
+            height: MediaQuery.of(context).size.height / 1.5,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                image: widget.picture != null
+                    ? DecorationImage(
+                        image: _image == null
+                            ? NetworkImage(widget.picture.imageUrl ?? "")
+                            : FileImage(this._image),
+                        fit: BoxFit.cover)
+                    : DecorationImage(
+                        image: image != null || _image == null
+                            ? NetworkImage(image ?? "")
+                            : FileImage(this._image),
+                        fit: BoxFit.cover),
+                color: Colors.grey.withOpacity(0.5),
+                shape: BoxShape.rectangle),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -102,7 +98,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
       await uploadFile();
       Navigator.pop(context);
     } else {
-      Navigator.pop(context);
+      print("something went wrong while uploading.");
     }
   }
 
