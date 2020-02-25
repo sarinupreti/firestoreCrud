@@ -21,8 +21,6 @@ class AddEditScreen extends StatefulWidget {
 }
 
 class _AddEditScreenState extends State<AddEditScreen> {
-  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   File _image;
   String image;
   String _uploadedFileURL;
