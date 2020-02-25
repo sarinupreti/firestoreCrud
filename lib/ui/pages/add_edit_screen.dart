@@ -29,52 +29,65 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
   static Firestore _firestore = Firestore.instance;
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    print(widget.picture);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Picture"),
+        title: Text(widget.picture != null ? "Update Picture" : "Add Picture"),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              InkWell(
-                onTap: () {
-                  PermissionsService().requestPhotosPermission();
-                  _getCameraImage(context);
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      image: widget.picture != null
-                          ? DecorationImage(
-                              image: _image == null
-                                  ? NetworkImage(widget.picture.imageUrl ?? "")
-                                  : FileImage(this._image),
-                              fit: BoxFit.cover)
-                          : DecorationImage(
-                              image: image != null || _image == null
-                                  ? NetworkImage(image ?? "")
-                                  : FileImage(this._image),
-                              fit: BoxFit.cover),
-                      color: Colors.grey.withOpacity(0.5),
-                      shape: BoxShape.rectangle),
-                ),
+        child: ListView(
+          children: [
+            InkWell(
+              onTap: () async {
+                await PermissionsService().requestPhotosPermission();
+                _getCameraImage(context);
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height / 1.5,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    image: widget.picture != null
+                        ? DecorationImage(
+                            image: _image == null
+                                ? NetworkImage(widget.picture.imageUrl ?? "")
+                                : FileImage(this._image),
+                            fit: BoxFit.cover)
+                        : DecorationImage(
+                            image: image != null || _image == null
+                                ? NetworkImage(image ?? "")
+                                : FileImage(this._image),
+                            fit: BoxFit.cover),
+                    color: Colors.grey.withOpacity(0.5),
+                    shape: BoxShape.rectangle),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: isLoading
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              )
+            : image == null && _image != null
+                ? Text('Save changes')
+                : Text('Add Picture'),
         tooltip:
             image == null && _image != null ? 'Save changes' : 'Add Picture',
-        child: Icon(image == null && _image != null ? Icons.check : Icons.add),
+        icon: isLoading
+            ? SizedBox(height: 0, width: 0)
+            : Icon(image == null && _image != null ? Icons.check : Icons.add),
         onPressed: () async {
           if (image == null && _image == null) {
             _getCameraImage(context);
@@ -103,6 +116,9 @@ class _AddEditScreenState extends State<AddEditScreen> {
   }
 
   Future uploadFile() async {
+    setState(() {
+      isLoading = true;
+    });
     StorageReference storageReference =
         FirebaseStorage.instance.ref().child(hashCode.toString());
     StorageUploadTask uploadTask = storageReference.putFile(_image);
@@ -114,6 +130,9 @@ class _AddEditScreenState extends State<AddEditScreen> {
       await saveOrUpdateUserData();
     });
     print('File Uploaded');
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future saveOrUpdateUserData() async {
